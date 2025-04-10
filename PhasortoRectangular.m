@@ -146,11 +146,13 @@ clc;
 
 
 clc;
-breakFlag = false;  % Declare it here so it's available globally in the loop
+breakFlag = false;  % Declare it here so it's 
+                    %available globally in the loop
 
 while true
     clc;
-    fprintf('\n------------------ BOBBY''S SILLY EE MENU ------------------');
+    fprintf(['\n------------------ BOBBY''S SILLY ' ...
+        'EE MENU ------------------']);
     fprintf('\n0) Basic Circuit Equations\n');
     fprintf('9) To exit\n');  % Exit option only
 
@@ -173,12 +175,17 @@ while true
                 end
 
                 clc;
-                fprintf('\n------------------ Basics! ------------------\n');
+                fprintf(['\n------------------ ' ...
+                    'Basics! ------------------\n']);
                 fprintf('0) Ohm''s Law \n');
+                fprintf(['1) Parallel Resistor/Inductors or Capacitors in' ...
+                    ' Parallel']);
                 fprintf('9) Return to Main Menu\n');
-                pickOneAgain = input('Select what you would like to do: ', 's');
+                pickOneAgain = input(['Select what you ' ...
+                    'would like to do: '], 's');
 
-                if isempty(pickOneAgain) || ~all(isstrprop(pickOneAgain, 'digit'))
+                if isempty(pickOneAgain) || ~all(isstrprop(pickOneAgain, ...
+                        'digit'))
                     disp('Invalid selection...');
                     pause(1.5);
                     continue;
@@ -190,14 +197,16 @@ while true
                     case 0  % Ohm's Law Calculator
                         while true
                             clc;
-                            fprintf('\n------------------ Ohm''s Law Calculator! ------------------\n');
+                            fprintf(['\n------------------ Ohm''s ' ...
+                                'Law Calculator! ------------------\n']);
                             in = input(['What do you want to calculate?\n' ...
                                         'V) Voltage\n' ...
                                         'I) Current\n' ...
                                         'R) Resistance\n> '], 's');
 
                             if isempty(in)
-                                disp('Invalid input. Please enter V, I, or R.');
+                                disp(['Invalid input. Please enter V, ' ...
+                                    'I, or R.']);
                                 pause(1.5);
                                 continue;
                             end
@@ -205,7 +214,8 @@ while true
                             in = upper(in);
 
                             if ~ismember(in, {'V', 'I', 'R'})
-                                fprintf('\nInvalid input. Please enter V, I, or R.');
+                                fprintf(['\nInvalid input. Please enter V, ' ...
+                                    'I, or R.']);
                                 pause(1.5);
                                 continue;
                             end
@@ -213,24 +223,35 @@ while true
                             % Perform calculation
                             switch in
                                 case 'V'
-                                    I = input('Enter current (I in amps): ');
-                                    R = input('Enter resistance (R in ohms): ');
+                                    I = input(['Enter current (' ...
+                                        'I in amps): ']);
+                                    R = input(['Enter resistance \\' ...
+                                        '(R in ohms): ']);
                                     V = I * R;
-                                    fprintf('\nVoltage (V) = %.2f volts\n', V);
+                                    fprintf(['\nVoltage (V) = %.2f ' ...
+                                    'volts\n'], V);
                                 case 'I'
-                                    V = input('Enter voltage (V in volts): ');
-                                    R = input('Enter resistance (R in ohms): ');
+                                    V = input(['Enter voltage ' ...
+                                        '(V in volts): ']);
+                                    R = input(['Enter resistance ' ...
+                                        '(R in ohms): ']);
                                     I = V / R;
-                                    fprintf('\nCurrent (I) = %.2f amps\n', I);
+                                    fprintf(['\nCurrent (I) = ' ...
+                                        '%.2f amps\n'], I);
                                 case 'R'
-                                    V = input('Enter voltage (V in volts): ');
-                                    I = input('Enter current (I in amps): ');
+                                    V = input(['Enter voltage ' ...
+                                        '(V in volts): ']);
+                                    I = input(['Enter current ' ...
+                                        '(I in amps): ']);
                                     R = V / I;
-                                    fprintf('\nResistance (R) = %.2f ohms\n', R);
+                                    fprintf(['\nResistance (R) = ' ...
+                                        '%.2f ohms\n'], R);
                             end
 
-                            again = input(['\nDo you want to (c)ontinue calculating, ' ...
-                                           '(b)ack to Basics menu, or (m)ain menu? '], 's');
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Basics menu, ' ...
+                                           'or (m)ain menu? '], 's');
                             again = lower(again);
 
                             if strcmp(again, 'c')
@@ -241,11 +262,54 @@ while true
                                 breakFlag = true;
                                 break;  % Break calculator loop
                             else
-                                disp('Invalid input. Returning to Basics menu...');
+                                disp(['Invalid input. ' ...
+                                    'Returning to Basics menu...']);
                                 pause(1);
                                 break;
                             end
                         end
+                    case 1
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Parallel' ...
+                                ' Resistors/Inductors or Capacitors in ' ...
+                                'Series ------------------']);
+    fprintf(['\n--->MUST BE IN THIS FORM EX:[15 65 23] WITH THE ' ...
+                'BRACKETS<---\n'])
+    X = input('Enter component values: ')
+    if isempty(X) || ~isnumeric(X)
+        disp('Invalid input try again...')
+        pause(2);
+        continue;
+    end
+
+    answer = 1/sum(1 ./X);
+
+
+                           fprintf('Answer: %.3f\n', answer);
+
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Basics menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Basics menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+
+                   
 
                     case 9
                         break;  % Back to main menu
