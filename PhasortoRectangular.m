@@ -145,6 +145,11 @@ clc;
 %end
 
 
+
+
+
+
+
 clc;
 breakFlag = false;  % Declare it here so it's 
                     %available globally in the loop
@@ -179,7 +184,7 @@ while true
                     'Basics! ------------------\n']);
                 fprintf('0) Ohm''s Law \n');
                 fprintf(['1) Parallel Resistor/Inductors or Capacitors in' ...
-                    ' Parallel']);
+                    ' Parallel\n']);
                 fprintf('9) Return to Main Menu\n');
                 pickOneAgain = input(['Select what you ' ...
                     'would like to do: '], 's');
@@ -321,7 +326,7 @@ while true
             end  % end Basics menu loop
 
         case 9
-            fprintf('Exiting...\n');
+            fprintf('Exiting...\n\n\n');
             break;  % Exit program
 
         otherwise
