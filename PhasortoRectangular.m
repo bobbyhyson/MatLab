@@ -160,6 +160,7 @@ while true
         'EE MENU ------------------']);
     fprintf('\n0) Basic Circuit Equations\n');
     fprintf('1) AC Circuit Equations\n');
+    fprintf('2) Time Domain\n')
     fprintf('9) To exit\n');  % Exit option only
 
     pickOne = input('Select what you would like to do: ', 's');
@@ -279,7 +280,7 @@ while true
                             clc;
                             fprintf(['\n------------------ Parallel' ...
                                 ' or Series Components' ...
-                                '------------------\n']);
+                                ' ------------------\n']);
 
         fprintf(['ex: 10 + 20||20 = 20\nIT WILL TAKE PRIORITY OF PARALLEL' ...
             ' FIRST ex: 10 + (20||20)\n']);
@@ -294,38 +295,6 @@ while true
 
 
                         
-                            again = input(['\nDo you want to ' ...
-                                '(c)ontinue calculating, ' ...
-                                           '(b)ack to Basics menu, ' ...
-                                           'or (m)ain menu? '], 's');
-                            again = lower(again);
-
-                            if strcmp(again, 'c')
-                                continue;
-                            elseif strcmp(again, 'b')
-                                break;  % Go back to Basics menu
-                            elseif strcmp(again, 'm')
-                                breakFlag = true;
-                                break;  % Break calculator loop
-                            else
-                                disp(['Invalid input. ' ...
-                                    'Returning to Basics menu...']);
-                                pause(1);
-                                break;
-                            end
-                        end
-                    case 3
-
-              
-                        while true
-                            clc;
-                            fprintf(['\n------------------ ' ...
-                                ' ' ...
-                                '------------------\n']);
-
-
-
-
                             again = input(['\nDo you want to ' ...
                                 '(c)ontinue calculating, ' ...
                                            '(b)ack to Basics menu, ' ...
@@ -371,7 +340,9 @@ while true
                 fprintf(['\n------------------ ' ...
                     'AC Circuits! ------------------\n']);
                 fprintf('0) Impedence \n');
-                fprintf(['1) Polar to Rectangular\n']);
+                fprintf('1) Polar to Rectangular\n');
+                fprintf('2) Rectangular to Polar\n');
+                fprintf('3) ')
                 fprintf('9) Return to Main Menu\n');
                 pickOneAgain = input(['Select what you ' ...
                     'would like to do: '], 's');
@@ -480,8 +451,83 @@ fprintf('Rectangular form: %.3f + %.3fj\n', real(phasor), imag(phasor));
                                 break;
                             end
                         end
+                    case 2
+
+              
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Rectangular to ' ...
+                                ' ' ...
+                                'Polar Calculator ------------------\n']);
 
 
+        X = input('\nex: real + imaginaryj\n\nInput the values: \n');
+        absolute = abs(X);
+        degree = rad2deg(angle(X));
+        %Print output
+        fprintf('Phasor: %d∠%.3f°\n', X, degree);
+
+
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Basics menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Basics menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+                    case 3
+
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Parallel and' ...
+                                ' ' ...
+                                ' Series ------------------\n']);
+
+        fprintf(['ex: 10 + 20||20 = 20\nIT WILL TAKE PRIORITY OF PARALLEL' ...
+            ' FIRST ex: 10 + (20||20)\n']);
+        expr = input(['Enter your values: '], 's');
+
+        try
+            result = evaluateResistorExpression(expr);
+            fprintf('Answer: %.4f\n', result);
+        catch ME
+            fprintf('Error: %s\n', ME.message);
+        end
+
+
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Basics menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Basics menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
 
                                     
             case 9
@@ -499,10 +545,192 @@ fprintf('Rectangular form: %.3f + %.3fj\n', real(phasor), imag(phasor));
             
                 end
             end  % end AC Circuits menu loop
+        case 2
+            while true
+                if breakFlag
+                    breakFlag = false;  % Reset it for next time
+                    break;  % Exit to main menu
+                end
+
+                clc;
+                fprintf(['\n------------------ ' ...
+                    'Time Domain ------------------\n']);
+                fprintf('0) Capacitor (charging)\n');
+                fprintf('1) Capacitor (discharching)\n');
+                fprintf('2) Inductor (charging)\n');
+                fprintf('3) Inductor (discharging)\n');
+
+                fprintf('9) Return to Main Menu\n');
+                pickOneAgain = input(['Select what you ' ...
+                    'would like to do: '], 's');
+
+                if isempty(pickOneAgain) || ~all(isstrprop(pickOneAgain, ...
+                        'digit'))
+                    disp('Invalid selection...');
+                    pause(1.5);
+                    continue;
+                end
+
+                choiceAgain = str2double(pickOneAgain);
+
+                switch choiceAgain
+                    case 0
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Capacitor' ...
+                                ' ' ...
+                                ' Charging Calculator ------------------\n']);
+                            Vol = input('Input V0: ');
+                            Res = input('Input R: ');
+                            Cap = input('Input C: ');
+                            tim = input('Input t: ');
+
+                            timeDomain = (Vol*(1-(exp((-tim/(Res*Cap))))));
+                            fprintf('\nV(t) = %.3f', timeDomain);
+            
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Time Domain menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Time Domain menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+
+                    case 1
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Capacitor' ...
+                                ' ' ...
+                                ' Discharging Calculator ------------------\n']);
+                            Vol = input('Input V0: ');
+                            Res = input('Input R: ');
+                            Cap = input('Input C: ');
+                            tim = input('Input t: ');
+
+                            timeDomain = (Vol*(exp((-tim/(Res*Cap)))));
+                            fprintf('\nV(t) = %.3f', timeDomain);
+            
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Time Domain menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Time Domain menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+                    case 2
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Inductor' ...
+                                ' ' ...
+                                ' Charging Calculator ------------------\n']);
+                            Amp = input('Input I0: ');
+                            Res = input('Input R: ');
+                            Cap = input('Input C: ');
+                            tim = input('Input t: ');
+
+                            timeDomain = (Amp*(1-(exp((-tim/(Res*Cap))))));
+                            fprintf('\nV(t) = %.3f', timeDomain);
+            
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Time Domain menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Time Domain menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+                    case 3
+                        while true
+                            clc;
+                            fprintf(['\n------------------ Inductor' ...
+                                ' ' ...
+                                ' Discharging Calculator ------------------\n']);
+                            Amp = input('Input I0: ');
+                            Res = input('Input R: ');
+                            Cap = input('Input C: ');
+                            tim = input('Input t: ');
+
+                            timeDomain = (Amp*(exp((-tim/(Res*Cap)))));
+                            fprintf('\nV(t) = %.3f', timeDomain);
+            
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Time Domain menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Time Domain menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
 
 
 
 
+
+            case 9
+                        
+                                        
+                break;  % Back to main menu
+
+
+            otherwise
+                        
+                disp('Invalid selection...');
+                        
+                pause(1.5);
+                
+            
+                end
+            end  % end Time Domain menu loop
 
 
         case 9
@@ -512,7 +740,7 @@ fprintf('Rectangular form: %.3f + %.3fj\n', real(phasor), imag(phasor));
         otherwise
             disp('Invalid selection...');
             pause(1.5);
-    end
+    end %end of main menu
 end
 
 
