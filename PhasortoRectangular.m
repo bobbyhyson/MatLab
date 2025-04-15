@@ -131,7 +131,8 @@ while true
                                 ' or Series Components' ...
                                 ' ------------------\n']);
 
-                            fprintf(['ex: 10 + 20||20 = 20\nIT WILL TAKE PRIORITY OF PARALLEL' ...
+                            fprintf(['ex: 10 + 20||20 = 20\nIT ' ...
+                                'WILL TAKE PRIORITY OF PARALLEL' ...
                                 ' FIRST ex: 10 + (20||20)\n']);
                             expr = input(['Enter your values: '], 's');
 
@@ -212,10 +213,12 @@ while true
                                 ' ' ...
                                 'Calculator ------------------\n']);
                             decision = input(['Pick from the following:\n' ...
-                                'Calculating for:\nL) Inductor\nC) Capacitor\n> '], 's');
+                                'Calculating for:\nL) Inductor\nC) C' ...
+                                'apacitor\n> '], 's');
 
                             if isempty(decision)
-                                disp('Invalid selection. Please enter L or C.');
+                                disp(['Invalid selection. Please enter ' ...
+                                    'L or C.']);
                                 pause(1.5);
                                 continue;
                             end
@@ -224,21 +227,24 @@ while true
 
                             switch decision
                                 case 'L'
-                                    om = input('Enter ω (angular frequency): ');
+                                    om = input(['Enter ω (angular ' ...
+                                        'frequency): ']);
                                     L = input('Enter L (inductance in H): ');
                                     Z = 1j * om * L;
-                                    fprintf('Impedance (Z) = %.3f + %.3fj Ohms\n' ...
-                                        , real(Z), imag(Z));
+                                    fprintf('Impedance (Z) = %.3f + .3fj Ohms\n', real(Z), imag(Z));
 
                                 case 'C'
-                                    om = input('Enter ω (angular frequency): ');
-                                    C = input('Enter C (capacitance in F): ');
+                                    om = input(['Enter ω (angular ' ...
+                                        'frequency): ']);
+                                    C = input(['Enter C (capacitance ' ...
+                                        'in F): ']);
                                     Z = -1j / (om * C);
                                     fprintf('Impedance (Z) = %.3f + %.3fj Ohms\n' ...
                                         , real(Z), imag(Z));
 
                                 otherwise
-                                    disp('Invalid selection. Please enter L or C.');
+                                    disp(['Invalid selection. ' ...
+                                        'Please enter L or C.']);
                             end
 
 
@@ -314,7 +320,7 @@ while true
                             absolute = abs(X);
                             degree = rad2deg(angle(X));
                             %Print output
-                            fprintf('Phasor: %d∠%.3f°\n', X, degree);
+                            fprintf('Phasor: %d∠%.3f°\n', absolute, degree);
 
 
                             again = input(['\nDo you want to ' ...
@@ -660,6 +666,65 @@ while true
                                 break;
                             end
                         end
+                    case 1
+                        while true
+                            clc;
+                            fprintf(['\n------------------ INverting Summ' ...
+                                ' ' ...
+                                'ing Amplifier Calculator ' ...
+                                '------------------\n']);
+
+                            Vo = input('Vo (output voltage) = ');
+                            Va = input('Va (input voltage) = ');
+                            Vb = input('Vb (input voltage) = ');
+                            Vc = input('Vc (input voltage) = ');
+                            Rf = input('Rf (feedback resistor in ohms) = ');
+                            Ra = input('Ra (input resistor in ohms) = ');
+                            Rb = input('Rb (input resistor in ohms) = ');
+                            Rc = input('Rc (input resistor in ohms) = ');
+
+                            knownVars = struct();
+                            if ~isempty(Vo), knownVars.Vo = Vo; end
+                            if ~isempty(Va), knownVars.Va = Va; end
+                            if ~isempty(Vb), knownVars.Vb = Vb; end
+                            if ~isempty(Vc), knownVars.Vc = Vc; end
+                            if ~isempty(Rf), knownVars.Rf = Rf; end
+                            if ~isempty(Ra), knownVars.Ra = Ra; end
+                            if ~isempty(Rb), knownVars.Rb = Rb; end
+                            if ~isempty(Rc), knownVars.Rc = Rc; end
+
+                            try
+                                result = opamp_solver('inverting_summing', ...
+                                    knownVars);
+                                disp('--- Solved Value ---');
+                                disp(result);
+                            catch err
+                                disp('Could not solve equation:');
+                                disp(err.message);
+                            end
+
+                            pause;
+                            again = input(['\nDo you want to ' ...
+                                '(c)ontinue calculating, ' ...
+                                           '(b)ack to Basics menu, ' ...
+                                           'or (m)ain menu? '], 's');
+                            again = lower(again);
+
+                            if strcmp(again, 'c')
+                                continue;
+                            elseif strcmp(again, 'b')
+                                break;  % Go back to Basics menu
+                            elseif strcmp(again, 'm')
+                                breakFlag = true;
+                                break;  % Break calculator loop
+                            else
+                                disp(['Invalid input. ' ...
+                                    'Returning to Basics menu...']);
+                                pause(1);
+                                break;
+                            end
+                        end
+
 
                     case 9
 
@@ -710,7 +775,8 @@ for i = 1:length(tokens)
     if ~isempty(regexp(token, '^\d+(\.\d+)?$', 'once'))
         outputQueue{end+1} = token;
     elseif isKey(precedence, token)
-        while ~isempty(operatorStack) && isKey(precedence, operatorStack{end}) && ...
+        while ~isempty(operatorStack) && isKey(precedence, ...
+                operatorStack{end}) && ...
                 precedence(operatorStack{end}) >= precedence(token)
             outputQueue{end+1} = operatorStack{end};
             operatorStack(end) = [];
@@ -771,13 +837,37 @@ function result = opamp_solver(configType, knownVars)
 switch lower(configType)
     case 'inverting'
         result = solve_inverting(knownVars);
-        % Add more cases for other op amp types
+    case 'inverting_summing'
+        result = solve_inverting_summing(knownVars);
     otherwise
         error('Unknown op amp configuration.');
 end
 end
 
 
+%inverting summing
+function result = solve_inverting_summing(vars)
+syms Vo Va Vb Vc Rf Ra Rb Rc
+
+eq = Vo == -(((Rf/Ra)*Va)+((Rf/Rb)*Vb)+((Rf/Rc)*Vc));
+
+% Substitute known values
+fields = fieldnames(vars);
+for i = 1:length(fields)
+    eq = subs(eq, sym(fields{i}), vars.(fields{i}));
+end
+
+unknowns = setdiff({'Vo','Va','Vb','Vc','Rf','Ra','Rb','Rc',}, fields);
+if length(unknowns) ~= 1
+    error('You must provide exactly Seven known variables.');
+end
+
+sol = solve(eq, sym(unknowns{1}));
+result.(unknowns{1}) = double(sol);
+end
+
+
+%inverting
 function result = solve_inverting(vars)
 syms Vo Vi Rf Rin
 
