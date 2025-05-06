@@ -1,0 +1,4 @@
+Systems of equations solver
+for node voltage/mesh current
+
+Step response (chapter 8)
